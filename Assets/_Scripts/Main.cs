@@ -20,7 +20,6 @@ public class Main : MonoBehaviour {
     public WeaponDefinition[] weaponDefinitions;
     public WeaponType[] activeWeaponTypes;
 
-    
 
     void Awake() {
         S = this;

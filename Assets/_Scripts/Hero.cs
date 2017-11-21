@@ -25,10 +25,16 @@ public class Hero : MonoBehaviour {
 
     public WeaponFireDelegate fireDelegate;
 
+    public Weapon[] weapons;
+
     void Awake() {
         S = this;
 
         bounds = Utils.CombineBoundsOfChildren(this.gameObject);
+
+        ClearWeapons();
+        weapons[0].SetType(WeaponType.blaster);
+
     }
 
 
@@ -61,8 +67,6 @@ public class Hero : MonoBehaviour {
 
         transform.rotation = Quaternion.Euler(yAxis*pitchMult,xAxis*rollMult,0);
 
-        string sss = Input.inputString;
-        print(sss);
         if (Input.GetAxis("Fire1") == 1 && fireDelegate != null) {
             fireDelegate();
         }
@@ -78,14 +82,61 @@ public class Hero : MonoBehaviour {
             }
             lastTriggerGo = go;
 
-            if (go.tag == "Enemy") {
+            if (go.tag == "Enemy")
+            {
                 shieldLevel--;
                 Destroy(go);
+            }
+            else if (go.tag == "PowerUp")
+            {
+                AbsorbPowerUp(go);
+            }
+            else {
+                print("触发碰撞事件：" + other.gameObject.name);
             }
         }
         else
         {
             print("触发碰撞事件："+other.gameObject.name);
+        }
+    }
+
+    public void AbsorbPowerUp(GameObject go) {
+        PowerUp pu = go.GetComponent<PowerUp>();
+        switch (pu.type) {
+            case WeaponType.shield:
+                shieldLevel++;
+                break;
+            default:
+                if (pu.type == weapons[0].type)
+                {
+                    Weapon w = GetEmptyWeaponSlot();
+                    if (w != null)
+                    {
+                        w.SetType(pu.type);
+                    }
+                }
+                else {
+                    ClearWeapons();
+                    weapons[0].SetType(pu.type);
+                }
+                break;
+        }
+        pu.AbsorbedBy(this.gameObject);
+    }
+
+    Weapon GetEmptyWeaponSlot() {
+        for (int i =0; i < weapons.Length; i++) {
+            if (weapons[i].type == WeaponType.none) {
+                return weapons[i];
+            }
+        }
+        return null;
+    }
+
+    void ClearWeapons() {
+        foreach (Weapon w in weapons) {
+            w.SetType(WeaponType.none);
         }
     }
 
