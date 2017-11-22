@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
     public float speed = 10f;
     public float fireRate = 0.3f;
-    public float health = 10;
+    public float health = 5;
     public int score = 100;
 
     public bool __________;
@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour {
     public Material[] materials;
     public int remainingDamageFrames = 0;
 
+    public float powerUpDropChance = 1f;
 
     void Awake() {
         materials = Utils.GetAllMaterials(gameObject);
@@ -63,6 +64,7 @@ public class Enemy : MonoBehaviour {
                 health -= Main.W_DEFS[p.type].damageOnHit;
                 ShowDamage();
                 if (health <= 0) {
+                    Main.S.ShipDestroyed(this);
                     Destroy(this.gameObject);
                 }
                 Destroy(other);

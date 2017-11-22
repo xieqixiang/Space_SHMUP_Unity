@@ -6,7 +6,7 @@ public class Shield : MonoBehaviour {
 
     public float rotationsPerSecond = 0.1f;
     public bool ______________;
-    public int levelShown = 0;
+    public int levelShown = 1;
 
 
 	// Use this for initialization
